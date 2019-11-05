@@ -1,0 +1,242 @@
+﻿<Window x:Name="Approximator" x:Class="ApproximationGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign ="http://materialdesigninxaml.net/winfx/xaml/themes"        
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:ApproximationGUI"
+        mc:Ignorable="d" Height="730" Width="1020" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" Foreground="White">
+    <Window.Resources>
+        <Storyboard x:Key="MenuOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="60"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="140"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="MenuClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="140"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="60"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonOpenMenu">
+            <BeginStoryboard Storyboard="{StaticResource MenuOpen}"/>
+        </EventTrigger>
+
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonCloseMenu">
+            <BeginStoryboard Storyboard="{StaticResource MenuClose}"/>
+        </EventTrigger>
+    </Window.Triggers>
+    
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top" Height="60" VerticalAlignment="Top" Background="#FF1480CB">
+            <TextBlock Text="Approximation of Functions" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22"/>
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right" >
+                <TextBlock Text="Options"  VerticalAlignment="Center" FontSize="18"/>
+                <materialDesign:PopupBox HorizontalAlignment="Right" Margin="0,10,10,10" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                    <StackPanel Width="150">
+                        <Button Content="Settings"/>
+                        <Button x:Name="Help" Content="Help" Click="Help_Click"/>
+                        <Separator/>
+                        <Button x:Name="ButtonPopUpLogout" Content="Log out" Click="ButtonPopUpLogout_Click"/>
+                    </StackPanel>
+                </materialDesign:PopupBox>
+            </StackPanel>
+        </Grid>
+        <Grid DockPanel.Dock="Left" x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#FF1651A6">
+            <StackPanel>
+                <Grid Height="60" Background="White">
+                    <Button x:Name="ButtonCloseMenu" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed" Click="ButtonCloseMenu_Click">
+                        <materialDesign:PackIcon Foreground="#FF1651A6" Kind="ArrowLeft" Width="25" Height="25"/>
+                    </Button>
+                    <Button x:Name="ButtonOpenMenu" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="ButtonOpenMenu_Click">
+                        <materialDesign:PackIcon Foreground="#FF1651A6" Kind="Menu" Width="25" Height="25"/>
+                    </Button>
+                </Grid>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF1480CB">
+                    <ListViewItem x:Name="Item_Create" PreviewMouseLeftButtonUp="Item_Create_PreviewMouseLeftButtonDown" Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Pencil" Width="25" Height="25" Margin="10" VerticalAlignment="Center"/>
+                            <TextBlock Text="Create" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem x:Name="Item_Message" PreviewMouseLeftButtonUp="Item_Message_PreviewMouseLeftButtonUp"  Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ChartBubble" Width="25" Height="25" Margin="10" VerticalAlignment="Center"/>
+                            <TextBlock Text="Change" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem x:Name="Item_Count" PreviewMouseLeftButtonUp="Item_Count_PreviewMouseLeftButtonUp"  Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Counter" Width="25" Height="25" Margin="10" VerticalAlignment="Center"/>
+                            <TextBlock Text="Count" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem x:Name="Item_Chart" PreviewMouseLeftButtonUp="Item_Chart_PreviewMouseLeftButtonUp" Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ChartLine" Width="25" Height="25" Margin="10" VerticalAlignment="Center"/>
+                            <TextBlock Text="Chart" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem x:Name="Item_Git" PreviewMouseLeftButtonUp="Item_Git_PreviewMouseLeftButtonUp" Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="GithubBox" Width="25" Height="25" Margin="10" VerticalAlignment="Center"/>
+                            <TextBlock Text="GitHub" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+            </StackPanel>
+        </Grid>
+        <Grid>
+            <TabControl x:Name="tab_items" BorderThickness="0">
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Style>
+                </TabControl.ItemContainerStyle>
+                <TabItem>
+                    <TabItem.Content>
+                        <Grid>
+                            <Grid>
+                                <StackPanel VerticalAlignment="Top" x:Name="stackGrid">
+                                    <TextBlock Height="60" FontSize="33" Text="Creation of Table" Margin="100 0 0 0 " Foreground="#FF1480CB" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Height="42" FontSize="22" Text="Adding Point:" Foreground="#FF1480CB" HorizontalAlignment="Left" Margin="10 0 0 0"/>
+                                    <TextBlock Height="30" FontSize="12" Text="Choose step:" Foreground="#FF1480CB" HorizontalAlignment="Left" Margin="40 0 0 0"/>
+                                    <TextBox Text="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" Width="120" HorizontalAlignment="Left" Margin="40 0 0 20" Height="25" />
+                                    <Slider Name="slValue"  IsSnapToTickEnabled="True" TickFrequency="0.25" Value="1" Minimum="0" Maximum="100" HorizontalAlignment="Left" Margin="40 0 0 0" SelectionStart="0" Height="30" IsSelectionRangeEnabled="True" Width="400" SmallChange="0.5"/>
+                                    <DockPanel>
+                                        <StackPanel DockPanel.Dock="Left">
+                                            <TextBlock Height="30" FontSize="12" Text=" X value :" Foreground="#FF1480CB" HorizontalAlignment="Left" Margin="40 0 0 0"/>
+                                            <TextBox x:Name="Value_Point_x" Text="1" TextAlignment="Center" Margin="40 0 0 0" Width="100" HorizontalAlignment="Left" Height="72" Padding="0" SpellCheck.IsEnabled="True" AutomationProperties.HelpText="Input value of " IsReadOnly ="True" FontSize="48" Foreground="#FF2196F3"/>
+                                        </StackPanel>
+                                        <StackPanel DockPanel.Dock="Right">
+                                            <TextBlock Height="30" FontSize="12" Text="Choose value for Y:" Foreground="#FF1480CB" HorizontalAlignment="Left" Margin="40 0 0 0"/>
+                                            <TextBox x:Name="Value_Point_y" Text="0" TextAlignment="Center" Margin="40 0 0 0" Width="100" HorizontalAlignment="Left" Height="25" Padding="0" SpellCheck.IsEnabled="True" AutomationProperties.HelpText="Input value of "/>
+                                            <Button x:Name="Button_Add_StepY" HorizontalAlignment="Left" Margin="40,20,0,2" Click="Button_Add_StepY_Click"  Content="+ step" Width="200" Background="#FF1651A6" BorderBrush="#FF1651A6" Height="25" Padding="16,2"/>
+                                            <Button x:Name="Button_Sub_StepY" HorizontalAlignment="Left" Margin="40,2,0,20" Click="Button_Sub_StepY_Click"  Content="- step" Width="200" Background="#FF1651A6" BorderBrush="#FF1651A6" Height="25" Padding="16,2"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <Button x:Name="Button_Apply" HorizontalAlignment="Left" Margin="160,0,0,0" Click="Button_Apply_Click"  Content="Add point" Width="200" Background="White" BorderBrush="#FF1651A6" Height="40" Padding="16,2" Foreground="#FF1651A6"/>
+                                    <TextBlock x:Name="Error_textbox" Height="12" FontSize="10" Text="*not correct input" Foreground="#FFFD0606" HorizontalAlignment="Left" Margin="220,10,0,0" Visibility="Hidden"/>
+                                    <TextBlock Height="40" FontSize="22" Text="Deleting Point:" Foreground="#FF1480CB" HorizontalAlignment="Left" Margin="10,10,0,0"/>
+                                    <Button x:Name="Button_Clear_Table" HorizontalAlignment="Left" Margin="40,0,0,10" Click="Button_Clear_Table_Click" Content="Clear Table" Width="200" Background="#FF1651A6" BorderBrush="#FF1651A6" Height="25" Padding="16,2"/>
+                                    <Button x:Name="Button_Delete_Point" HorizontalAlignment="Left" Margin="40,2,0,0" Click="Button_Delete_Point_Click" Content="Delete last point" Width="200" Background="#FF1651A6" BorderBrush="#FF1651A6" Height="25" Padding="16,2"/>
+                                                                   
+                                </StackPanel>
+                            </Grid>
+                            <Grid HorizontalAlignment="Right">
+                                <DataGrid HorizontalAlignment="Right" x:Name="pointsGrid" AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" Foreground="#FF1480CB">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="X" Binding="{Binding Path=Arg}" Width="160" Foreground="#FF1480CB" />
+                                    <DataGridTextColumn Header="Y" Binding="{Binding Path=Value}" Width="160" Foreground="#FF1480CB" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            </Grid>
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="0.25*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <DockPanel Grid.Row="0" VerticalAlignment="Top" x:Name="stackGrid2">
+                                    <TextBlock DockPanel.Dock="Top" Height="30" FontSize="22" Text="Changing value by clicking on the point" Margin="100 0 0 0 " Foreground="#FF1480CB" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock DockPanel.Dock="Top" Height="40" FontSize="22" Text="Deleting Point:" Foreground="#FF1480CB" HorizontalAlignment="Left" Margin="10,10,0,0"/>
+                                    <StackPanel DockPanel.Dock="Left">
+                                        <Button x:Name="Button_Clear_Table1" HorizontalAlignment="Left" Margin="40,0,0,10" Click="Button_Clear_Table_Click" Content="Clear Table" Width="200" Background="#FF1651A6" BorderBrush="#FF1651A6" Height="25" Padding="16,2"/>
+                                    </StackPanel>
+                                    <StackPanel DockPanel.Dock="Right">
+                                        <Button x:Name="Button_Delete_Point2" HorizontalAlignment="Left" Margin="40,2,0,0" Click="Button_Delete_Point_Click" Content="Delete last point" Width="200" Background="#FF1651A6" BorderBrush="#FF1651A6" Height="25" Padding="16,2"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <Grid Grid.Row="1" Margin="20,0,0,0" x:Name="ChartGrid">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Foreground="#FF1480CB">
+                                        <TextBlock >Mouse at: </TextBlock>
+                                        <TextBlock Name="X"></TextBlock>
+                                        <TextBlock >, </TextBlock>
+                                        <TextBlock Name="Y"></TextBlock>
+                                    </TextBlock>
+                                    <lvc:CartesianChart Grid.Row="1" Name="Chart"
+                                        MouseMove="ChartMouseMove"
+                                        DataClick="ChartOnDataClick"                                        
+                                        Series="{Binding OnlyPointCollection}">
+                                    </lvc:CartesianChart>
+
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <DataGrid HorizontalAlignment="Right" x:Name="pointsGrid2" AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray"
+    RowBackground="LightGray" AlternatingRowBackground="White" Foreground="#FF1480CB">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="X" Binding="{Binding Path=Arg}" Width="80" Foreground="#FF1480CB" />
+                                        <DataGridTextColumn Header="Y" Binding="{Binding Path=Value}" Width="80" Foreground="#FF1480CB" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Content>
+                        <Grid>
+                            <TextBlock HorizontalAlignment="Center" FontSize="33" Text="Counting" Foreground="#FF1480CB"/>
+                            <TextBlock x:Name="CONTENT" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Text="Results..." Foreground="#FF1480CB"/>
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Content>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Height="25" HorizontalAlignment="Center" FontSize="22" Text="Chart" Foreground="#FF1480CB"/>
+                            <Grid>
+                                <lvc:CartesianChart Series="{Binding MainSeriesCollection}" LegendLocation="Right">
+                                </lvc:CartesianChart>
+                            </Grid>
+                        </DockPanel>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Content>
+                        <Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.200*"/>
+                                    <ColumnDefinition Width="0.800*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.091*"/>
+                                    <RowDefinition Height="0.755*"/>
+                                    <RowDefinition Height="0.154*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Navigate To" TextWrapping="Wrap" Foreground="#FF1480CB"/>
+                                <TextBox x:Name="txtLoad"  Grid.Column="1" Text="" TextWrapping="Wrap" Background="White" HorizontalAlignment="Stretch" Cursor="No" Foreground="#FFE91D1D" Width="Auto" Height="30" VerticalAlignment="Top" BorderBrush="#FF1480CB"/>
+                                <WebBrowser x:Name="myBrowser" Grid.ColumnSpan="2" Grid.Row="1"  Cursor="Arrow"/>
+                                <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="2">
+                                    <!--<Button x:Name="btnExternal" Margin="10,0,0,0" Width="175" Content="Load   Requested Site" FontWeight="Bold" FontSize="14" Click="btnExternal_Click"/>-->
+                                    <Button x:Name="btnInternal" Margin="9,0,0,0" Width="175" Content="Load Default Site" Foreground="White" FontWeight="Bold" FontSize="14" Click="btnInternal_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+</Window>
